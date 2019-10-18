@@ -54,8 +54,8 @@ int bfs4(int n) {
 			return depth;
 		}
 
-		int lowest_abs_sum = 2147483647;
-//		long int lowest_abs_sum = (long int)9223372036854775807;
+//		int lowest_abs_sum = 2147483647;
+		long int lowest_abs_sum = (long int)92233720368;
 		vector<int> chosen_state;
 		for (int i = 0; i < n; i++) {
 			if (state[i] < 0) {
@@ -66,11 +66,14 @@ int bfs4(int n) {
 
 //				qu.push(make_pair(new_state, depth + 1));
 
-				int abs_sum = 0;
+				long int abs_sum = 0;
 				for (int k = 0; k < n; k++) {
-					abs_sum += abs(new_state[k]);
+					abs_sum += (long int)abs(new_state[k]);
 				}
+//				cout << "lowest_abs_sum" << lowest_abs_sum << endl;
+//				cout << "abs_sum = " << abs_sum << endl;
 				if (abs_sum < lowest_abs_sum){
+//					cout << "OK" << endl;
 					lowest_abs_sum = abs_sum;
 					chosen_state = new_state;
 				}

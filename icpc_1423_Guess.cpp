@@ -11,6 +11,21 @@ int sum_subrow(vector<int>* guess, int from, int to){
 }
 
 
+bool validate_sub_column(vector<int>* guess, vector<vector<char>>* mat, int guess_count, int col){
+	for (int i = 0; i < guess_count; i++){
+		if (i <= col){
+			if ((*mat)[i][col] == '+' && sum_subrow(guess, i, col) <= 0){
+				return false;
+			} else if ((*mat)[i][col] == '-' && sum_subrow(guess, i, col) >= 0){
+				return false;
+			} else if ((*mat)[i][col] == '0' && sum_subrow(guess, i, col) != 0){
+				return false;
+			}
+		}
+	}
+	return true;
+}
+
 bool validate_sub_matrix(vector<int>* guess, vector<vector<char>>* mat, int guess_count){
 	for (int i = 0; i < guess_count; i++){
 		for (int j = 0; j < guess_count; j++){
@@ -34,8 +49,7 @@ bool recursive_solve(vector<int>* guess, int next, int limit, vector<vector<char
 //	printf("-DD- recursive_solve: next = %d  \n", next);
 	if (next == limit){
 		return validate_sub_matrix(guess, matrix_ptr, limit);
-	} else if (!validate_sub_matrix(guess, matrix_ptr, next)){
-//		printf("-D- !validate_sub_matrix\n");
+	} else if (!validate_sub_column(guess, matrix_ptr, next, next- 1)){
 		return false;
 	}
 	else {

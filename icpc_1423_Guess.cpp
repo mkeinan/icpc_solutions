@@ -11,9 +11,9 @@ int sum_subrow(vector<int>* guess, int from, int to){
 }
 
 
-bool solve_aux(vector<int>* guess, vector<vector<char>>* mat){
-	for (int i = 0; i < (int)mat->size(); i++){
-		for (int j = 0; j < (int)mat->size(); j++){
+bool validate_sub_matrix(vector<int>* guess, vector<vector<char>>* mat, int guess_count){
+	for (int i = 0; i < guess_count; i++){
+		for (int j = 0; j < guess_count; j++){
 			if (i <= j){
 //				printf("from %d to %d = %d \n", i, j, sum_subrow(guess, i, j));
 				if ((*mat)[i][j] == '+' && sum_subrow(guess, i, j) <= 0){
@@ -31,17 +31,42 @@ bool solve_aux(vector<int>* guess, vector<vector<char>>* mat){
 
 
 bool recursive_solve(vector<int>* guess, int next, int limit, vector<vector<char>>* matrix_ptr){
+//	printf("-DD- recursive_solve: next = %d  \n", next);
 	if (next == limit){
-		return solve_aux(guess, matrix_ptr);
-	} else {
-		for (int i = -10; i <= 10; i++){
-			(*guess)[next] = i;
-//			printf("a[%d] = %d\n", next, i);
+		return validate_sub_matrix(guess, matrix_ptr, limit);
+	} else if (!validate_sub_matrix(guess, matrix_ptr, next)){
+//		printf("-D- !validate_sub_matrix\n");
+		return false;
+	}
+	else {
+//		printf("-DDD- recursive_solve: else. (*matrix_ptr)[next][next] = %d %d\n", (*matrix_ptr)[next][next], '-');
+		if ((*matrix_ptr)[next][next] == '0'){
+			(*guess)[next] = 0;
+//			printf("-D1- a[%d] = %d\n", next, 0);
 			if (recursive_solve(guess, next + 1, limit, matrix_ptr)){
 				return true;
 			}
 		}
+		if ((*matrix_ptr)[next][next] == '+'){
+			for (int i = 1; i <= 10; i++){
+				(*guess)[next] = i;
+//				printf("-D2- a[%d] = %d\n", next, i);
+				if (recursive_solve(guess, next + 1, limit, matrix_ptr)){
+					return true;
+				}
+			}
+		}
+		if ((*matrix_ptr)[next][next] == '-'){
+			for (int i = -1; i >= -10; i--){
+				(*guess)[next] = i;
+//				printf("-D3- a[%d] = %d\n", next, i);
+				if (recursive_solve(guess, next + 1, limit, matrix_ptr)){
+					return true;
+				}
+			}
+		}
 	}
+//	printf("-D- recursive_solve: END => false\n");
 	return false;
 }
 
@@ -77,10 +102,10 @@ void solve(int n) {
 
 
 
-	for (int i = 0 ; i < n ; i++) {
+	for (int i = 0 ; i < n - 1 ; i++) {
 		printf("%d ", sol[i]);
 	}
-	printf("\n");
+	printf("%d\n", sol[n-1]);
 }
 
 

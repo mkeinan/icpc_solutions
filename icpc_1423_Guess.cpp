@@ -11,16 +11,16 @@ int sum_subrow(vector<int>* guess, int from, int to){
 }
 
 
-bool solve_aux(vector<int>* guess, vector<vector<char>> mat){
-	for (int i = 0; i < (int)mat.size(); i++){
-		for (int j = 0; j < (int)mat.size(); j++){
+bool solve_aux(vector<int>* guess, vector<vector<char>>* mat){
+	for (int i = 0; i < (int)mat->size(); i++){
+		for (int j = 0; j < (int)mat->size(); j++){
 			if (i <= j){
 //				printf("from %d to %d = %d \n", i, j, sum_subrow(guess, i, j));
-				if (mat[i][j] == '+' && sum_subrow(guess, i, j) <= 0){
+				if ((*mat)[i][j] == '+' && sum_subrow(guess, i, j) <= 0){
 					return false;
-				} else if (mat[i][j] == '-' && sum_subrow(guess, i, j) >= 0){
+				} else if ((*mat)[i][j] == '-' && sum_subrow(guess, i, j) >= 0){
 					return false;
-				} else if (mat[i][j] == '0' && sum_subrow(guess, i, j) != 0){
+				} else if ((*mat)[i][j] == '0' && sum_subrow(guess, i, j) != 0){
 					return false;
 				}
 			}
@@ -30,14 +30,14 @@ bool solve_aux(vector<int>* guess, vector<vector<char>> mat){
 }
 
 
-bool recursive_solve(vector<int>* guess, int next, int limit, vector<vector<char>> matrix){
+bool recursive_solve(vector<int>* guess, int next, int limit, vector<vector<char>>* matrix_ptr){
 	if (next == limit){
-		return solve_aux(guess, matrix);
+		return solve_aux(guess, matrix_ptr);
 	} else {
 		for (int i = -10; i <= 10; i++){
 			(*guess)[next] = i;
 //			printf("a[%d] = %d\n", next, i);
-			if (recursive_solve(guess, next + 1, limit, matrix)){
+			if (recursive_solve(guess, next + 1, limit, matrix_ptr)){
 				return true;
 			}
 		}
@@ -62,18 +62,18 @@ void solve(int n) {
 	scanf("\n");
 
 	// DEBUG
-	printf("===== SOLVE =====\n");
-	for (int i = 0; i < n; i++){
-		for (int j = 0; j < n; j++){
-			if (i <= j){
-				printf("mat[%d][%d] = %c  ", i, j, matrix[i][j]);
-			}
-		}
-		printf("XX \n");
-	}
+//	printf("===== SOLVE =====\n");
+//	for (int i = 0; i < n; i++){
+//		for (int j = 0; j < n; j++){
+//			if (i <= j){
+//				printf("mat[%d][%d] = %c  ", i, j, matrix[i][j]);
+//			}
+//		}
+//		printf("XX \n");
+//	}
 
 
-	recursive_solve(&sol, 0, n, matrix);
+	recursive_solve(&sol, 0, n, &matrix);
 
 
 

@@ -2,7 +2,48 @@
 
 #include <cstdio>
 #include <vector>
+#include <numeric>
 using namespace std;
+
+
+int sum_subrow(vector<int>* guess, int from, int to){
+	return accumulate(guess->begin() + from, guess->begin() + to + 1, 0);
+}
+
+
+bool solve_aux(vector<int>* guess, vector<vector<char>> mat){
+	for (int i = 0; i < (int)mat.size(); i++){
+		for (int j = 0; j < (int)mat.size(); j++){
+			if (i <= j){
+//				printf("from %d to %d = %d \n", i, j, sum_subrow(guess, i, j));
+				if (mat[i][j] == '+' && sum_subrow(guess, i, j) <= 0){
+					return false;
+				} else if (mat[i][j] == '-' && sum_subrow(guess, i, j) >= 0){
+					return false;
+				} else if (mat[i][j] == '0' && sum_subrow(guess, i, j) != 0){
+					return false;
+				}
+			}
+		}
+	}
+	return true;
+}
+
+
+bool recursive_solve(vector<int>* guess, int next, int limit, vector<vector<char>> matrix){
+	if (next == limit){
+		return solve_aux(guess, matrix);
+	} else {
+		for (int i = -10; i <= 10; i++){
+			(*guess)[next] = i;
+//			printf("a[%d] = %d\n", next, i);
+			if (recursive_solve(guess, next + 1, limit, matrix)){
+				return true;
+			}
+		}
+	}
+	return false;
+}
 
 
 void solve(int n) {
@@ -30,6 +71,16 @@ void solve(int n) {
 		}
 		printf("XX \n");
 	}
+
+
+	recursive_solve(&sol, 0, n, matrix);
+
+
+
+	for (int i = 0 ; i < n ; i++) {
+		printf("%d ", sol[i]);
+	}
+	printf("\n");
 }
 
 
